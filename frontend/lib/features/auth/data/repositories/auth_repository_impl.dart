@@ -9,35 +9,53 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   @override
-  Future<Either> login(LoginReqParams loginReq) async {
+  Future<Either<String, Response>> login(LoginReqParams loginReq) async {
     Either result = await sl<AuthApiService>().login(loginReq);
     return result.fold(
-      (error) {
+          (error) {
         return Left(error);
       },
-      (data) async {
-        Response response = data;
-        SharedPreferences sharedPreferences =
-            await SharedPreferences.getInstance();
-        sharedPreferences.setString('token', response.data['token']);
-        return Right(response);
+          (data) async {
+        try {
+          Response response = data;
+          SharedPreferences sharedPreferences =
+          await SharedPreferences.getInstance();
+
+          // Safe access to token
+          if (response.data != null && response.data['token'] != null) {
+            sharedPreferences.setString('token', response.data['token']);
+          }
+
+          return Right(response);
+        } catch (e) {
+          return Left('Error saving token: $e');
+        }
       },
     );
   }
 
   @override
-  Future<Either> register(RegisterReqParams regReq) async {
+  Future<Either<String, Response>> register(RegisterReqParams regReq) async {
     Either result = await sl<AuthApiService>().register(regReq);
     return result.fold(
-      (error) {
+          (error) {
         return Left(error);
       },
-      (data) async {
-        Response response = data;
-        SharedPreferences sharedPreferences =
-            await SharedPreferences.getInstance();
-        sharedPreferences.setString('token', response.data['token']);
-        return Right(response);
+          (data) async {
+        try {
+          Response response = data;
+          SharedPreferences sharedPreferences =
+          await SharedPreferences.getInstance();
+
+          // Safe access to token
+          if (response.data != null && response.data['token'] != null) {
+            sharedPreferences.setString('token', response.data['token']);
+          }
+
+          return Right(response);
+        } catch (e) {
+          return Left('Error saving token: $e');
+        }
       },
     );
   }

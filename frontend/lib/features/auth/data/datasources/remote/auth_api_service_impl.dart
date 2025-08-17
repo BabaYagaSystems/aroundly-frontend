@@ -9,7 +9,7 @@ import 'package:frontend/service_locator.dart';
 
 class AuthApiServiceImpl implements AuthApiService {
   @override
-  Future<Either> login(LoginReqParams loginReq) async {
+  Future<Either<String, Response>> login(LoginReqParams loginReq) async {
     try {
       var response = await sl<DioClient>().post(
         ApiUrls.login,
@@ -23,7 +23,7 @@ class AuthApiServiceImpl implements AuthApiService {
   }
 
   @override
-  Future<Either> register(RegisterReqParams regReq) async {
+  Future<Either<String, Response>> register(RegisterReqParams regReq) async {
     try {
       var response = await sl<DioClient>().post(
         ApiUrls.register,
@@ -32,7 +32,14 @@ class AuthApiServiceImpl implements AuthApiService {
 
       return Right(response);
     } on DioException catch (e) {
-      return Left(e.response!.data['message']);
+      // Safe null check
+      if (e.response != null && e.response!.data != null) {
+        return Left(e.response!.data['message'] ?? 'Unknown error');
+      } else {
+        return Left(e.message ?? 'Connection error');
+      }
+    } catch (e) {
+      return Left('Unexpected error: $e');
     }
   }
 }

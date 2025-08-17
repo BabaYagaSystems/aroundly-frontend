@@ -102,7 +102,7 @@ class _SignInPageState extends State<SignInPage> {
                   onPressed: () {
                     sl<LoginUsecase>().call(
                       param: LoginReqParams(
-                        email: emailController.text,
+                        usernameOrEmail: emailController.text,
                         password: passwordController.text,
                       ),
                     );

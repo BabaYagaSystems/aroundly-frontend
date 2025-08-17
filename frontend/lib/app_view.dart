@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/features/auth/presentation/pages/sign_in_page.dart';
+import 'package:frontend/features/auth/presentation/pages/sign_up_page.dart';
 import 'package:frontend/features/feed/presentation/pages/feed_page.dart';
 //import 'package:frontend/features/auth/presentation/pages/sign_up_page.dart';
 //import 'package:frontend/features/auth/presentation/pages/sign_in_page.dart';
@@ -14,7 +16,7 @@ class MyAppView extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'LiveEye',
       theme: AppThemeDark.appDarkTheme,
-      home: FeedPage(),
+      home: SignInPage(),
     );
   }
 }

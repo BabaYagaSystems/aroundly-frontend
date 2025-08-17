@@ -98,7 +98,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 const SizedBox(height: 16),
                 AuthField(controller: nameController, hintText: 'Name'),
                 const SizedBox(height: 16),
-                AuthField(controller: surnameController, hintText: 'Surname'),
+                // AuthField(controller: surnameController, hintText: 'Surname'),
                 const SizedBox(height: 16),
                 AuthField(controller: emailController, hintText: 'Email'),
                 const SizedBox(height: 16),
@@ -108,19 +108,18 @@ class _SignUpPageState extends State<SignUpPage> {
                   isObscureText: true,
                 ),
                 const SizedBox(height: 16),
-                AuthField(
-                  controller: confirmPasswordController,
-                  hintText: 'Confirm Password',
-                  isObscureText: true,
-                ),
+                // AuthField(
+                //   controller: confirmPasswordController,
+                //   hintText: 'Confirm Password',
+                //   isObscureText: true,
+                // ),
                 const SizedBox(height: 20),
                 MyButton(
                   btnText: 'Sign Up',
                   onPressed: () {
                     sl<RegisterUsecase>().call(
                       param: RegisterReqParams(
-                        username:
-                            "${nameController.text} ${surnameController.text}",
+                        username: nameController.text,
                         email: emailController.text,
                         password: passwordController.text,
                       ),
