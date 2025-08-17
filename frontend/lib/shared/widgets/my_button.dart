@@ -3,12 +3,13 @@ import 'package:frontend/shared/themes/theme.dart';
 
 class MyButton extends StatelessWidget {
   final String btnText;
-  const MyButton({super.key, required this.btnText});
+  final VoidCallback onPressed;
+  const MyButton({super.key, required this.btnText, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         padding: EdgeInsets.symmetric(vertical: 18, horizontal: 24),
         backgroundColor: AppColors.primary,

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/features/auth/data/models/register_req_params.dart';
+import 'package:frontend/features/auth/domain/usecases/register_usecase.dart';
+import 'package:frontend/service_locator.dart';
 import 'package:frontend/shared/widgets/my_button.dart';
 import 'package:frontend/features/auth/presentation/widgets/auth_field.dart';
 import 'package:frontend/features/auth/presentation/widgets/oauth_button.dart';
@@ -111,7 +114,19 @@ class _SignUpPageState extends State<SignUpPage> {
                   isObscureText: true,
                 ),
                 const SizedBox(height: 20),
-                MyButton(btnText: 'Sign Up'),
+                MyButton(
+                  btnText: 'Sign Up',
+                  onPressed: () {
+                    sl<RegisterUsecase>().call(
+                      param: RegisterReqParams(
+                        username:
+                            "${nameController.text} ${surnameController.text}",
+                        email: emailController.text,
+                        password: passwordController.text,
+                      ),
+                    );
+                  },
+                ),
                 const SizedBox(height: 20),
                 RichText(
                   text: TextSpan(
