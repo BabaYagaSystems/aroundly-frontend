@@ -28,7 +28,7 @@ class _CreateIncidentPageState extends State<CreateIncidentPage> {
             const SizedBox(height: 18),
             HappeningDescriptionField(),
             const SizedBox(height: 18),
-            MyButton(btnText: 'Create Incident'),
+            MyButton(btnText: 'Create Incident', onPressed: () {}),
           ],
         ),
       ),

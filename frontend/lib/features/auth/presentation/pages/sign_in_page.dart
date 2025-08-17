@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/features/auth/data/models/login_req_params.dart';
+import 'package:frontend/features/auth/domain/usecases/login_usecase.dart';
+import 'package:frontend/service_locator.dart';
 import 'package:frontend/shared/widgets/my_button.dart';
 import 'package:frontend/features/auth/presentation/widgets/auth_field.dart';
 import 'package:frontend/features/auth/presentation/widgets/oauth_button.dart';
@@ -94,7 +97,17 @@ class _SignInPageState extends State<SignInPage> {
                   isObscureText: true,
                 ),
                 const SizedBox(height: 20),
-                MyButton(btnText: 'Log In'),
+                MyButton(
+                  btnText: 'Log In',
+                  onPressed: () {
+                    sl<LoginUsecase>().call(
+                      param: LoginReqParams(
+                        email: emailController.text,
+                        password: passwordController.text,
+                      ),
+                    );
+                  },
+                ),
                 const SizedBox(height: 16),
                 const SizedBox(height: 20),
                 RichText(
