@@ -1,10 +1,13 @@
 class LoginReqParams {
-  final String email;
+  final String usernameOrEmail;
   final String password;
 
-  LoginReqParams({required this.email, required this.password});
+  LoginReqParams({required this.usernameOrEmail, required this.password});
 
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{'email': email, 'password': password};
+    return <String, dynamic>{
+      'usernameOrEmail': usernameOrEmail,
+      'password': password,
+    };
   }
 }
