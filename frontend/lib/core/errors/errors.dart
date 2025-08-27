@@ -1,4 +1,4 @@
-abstract class Errors {
+class Errors {
   final String message;
   const Errors(this.message);
 }

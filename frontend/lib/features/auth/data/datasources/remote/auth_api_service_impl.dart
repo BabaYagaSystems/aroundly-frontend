@@ -26,9 +26,9 @@ class AuthApiServiceImpl implements AuthApiService {
 
       return Right(user);
     } on DioException catch (e) {
-      return Left(ServerError(e.response?.data['message'] ?? 'Unknown error'));
+      return Left(Errors(e.response?.data['message'] ?? 'Unknown error'));
     } catch (e) {
-      return Left(UnexpectedError(e.toString()));
+      return Left(Errors(e.toString()));
     }
   }
 
@@ -48,9 +48,9 @@ class AuthApiServiceImpl implements AuthApiService {
 
       return Right(user);
     } on DioException catch (e) {
-      return Left(ServerError(e.response?.data['message'] ?? 'Unknown error'));
+      return Left(Errors(e.response?.data['message'] ?? 'Unknown error'));
     } catch (e) {
-      return Left(UnexpectedError(e.toString()));
+      return Left(Errors(e.toString()));
     }
   }
 }
