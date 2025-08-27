@@ -17,7 +17,7 @@ class AuthRepositoryImpl implements AuthRepository {
       try {
         // Save token locally
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('token', user.token);
+        await prefs.setString('token', user.accessToken);
 
         return Right(user);
       } catch (e) {
@@ -34,7 +34,7 @@ class AuthRepositoryImpl implements AuthRepository {
       try {
         // Save token locally
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('token', user.token);
+        await prefs.setString('token', user.accessToken);
 
         return Right(user);
       } catch (e) {

@@ -30,14 +30,19 @@ class AuthApiServiceImpl implements AuthApiService {
       final data = response.data as Map<String, dynamic>;
       if (!data.containsKey('username') ||
           !data.containsKey('email') ||
-          !data.containsKey('token')) {
+          !data.containsKey('accessToken')) {
+        print('Missing fields debug info:');
+        print('Has username: ${data.containsKey('username')}');
+        print('Has email: ${data.containsKey('email')}');
+        print('Has accessToken: ${data.containsKey('accessToken')}');
+        print('Available keys: ${data.keys.toList()}');
         return Left(ServerError('Invalid response: missing required fields'));
       }
 
       // Ensure fields are non-null strings
       final username = data['username'] as String?;
       final email = data['email'] as String?;
-      final token = data['token'] as String?;
+      final token = data['accessToken'] as String?;
 
       if (username == null || email == null || token == null) {
         return Left(
@@ -45,7 +50,7 @@ class AuthApiServiceImpl implements AuthApiService {
         );
       }
 
-      final user = UserEntity(username: username, email: email, token: token);
+      final user = UserEntity(username: username, email: email, accessToken: token);
 
       return Right(user);
     } on DioException catch (e) {
@@ -79,14 +84,14 @@ class AuthApiServiceImpl implements AuthApiService {
       final data = response.data as Map<String, dynamic>;
       if (!data.containsKey('username') ||
           !data.containsKey('email') ||
-          !data.containsKey('token')) {
+          !data.containsKey('accessToken')) {
         return Left(ServerError('Invalid response: missing required fields'));
       }
 
       // Ensure fields are non-null strings
       final username = data['username'] as String?;
       final email = data['email'] as String?;
-      final token = data['token'] as String?;
+      final token = data['accessToken'] as String?;
 
       if (username == null || email == null || token == null) {
         return Left(
@@ -94,7 +99,7 @@ class AuthApiServiceImpl implements AuthApiService {
         );
       }
 
-      final user = UserEntity(username: username, email: email, token: token);
+      final user = UserEntity(username: username, email: email, accessToken: token);
 
       return Right(user);
     } on DioException catch (e) {
