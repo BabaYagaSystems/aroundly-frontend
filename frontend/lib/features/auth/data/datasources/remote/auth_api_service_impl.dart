@@ -18,17 +18,37 @@ class AuthApiServiceImpl implements AuthApiService {
         data: loginReq.toMap(),
       );
 
-      final user = UserEntity(
-        username: response.data['username'],
-        email: response.data['email'],
-        token: response.data['token'],
-      );
+      if (response.data == null || response.data is! Map<String, dynamic>) {
+        return Left(ServerError('Invalid response: data is null or not a map'));
+      }
+
+      final data = response.data as Map<String, dynamic>;
+      if (!data.containsKey('username') ||
+          !data.containsKey('email') ||
+          !data.containsKey('accessToken')) {
+        return Left(ServerError('Invalid response: missing required fields'));
+      }
+      final username = data['username'] as String?;
+      final email = data['email'] as String?;
+      final token = data['accessToken'] as String?;
+
+      if (username == null || email == null || token == null) {
+        return Left(
+          ServerError('Invalid response: one or more fields are null'),
+        );
+      }
+
+      final user = UserEntity(username: username, email: email, accessToken: token);
 
       return Right(user);
     } on DioException catch (e) {
-      return Left(Errors(e.response?.data['message'] ?? 'Unknown error'));
+      return Left(
+        ServerError(
+          e.response?.data['message'] ?? 'Login failed: ${e.message}',
+        ),
+      );
     } catch (e) {
-      return Left(Errors(e.toString()));
+      return Left(UnexpectedError('Unexpected error during login: $e'));
     }
   }
 
@@ -40,17 +60,37 @@ class AuthApiServiceImpl implements AuthApiService {
         data: regReq.toMap(),
       );
 
-      final user = UserEntity(
-        username: response.data['username'],
-        email: response.data['email'],
-        token: response.data['token'],
-      );
+      if (response.data == null || response.data is! Map<String, dynamic>) {
+        return Left(ServerError('Invalid response: data is null or not a map'));
+      }
+
+      final data = response.data as Map<String, dynamic>;
+      if (!data.containsKey('username') ||
+          !data.containsKey('email') ||
+          !data.containsKey('accessToken')) {
+        return Left(ServerError('Invalid response: missing required fields'));
+      }
+      final username = data['username'] as String?;
+      final email = data['email'] as String?;
+      final token = data['accessToken'] as String?;
+
+      if (username == null || email == null || token == null) {
+        return Left(
+          ServerError('Invalid response: one or more fields are null'),
+        );
+      }
+
+      final user = UserEntity(username: username, email: email, accessToken: token);
 
       return Right(user);
     } on DioException catch (e) {
-      return Left(Errors(e.response?.data['message'] ?? 'Unknown error'));
+      return Left(
+        ServerError(
+          e.response?.data['message'] ?? 'Registration failed: ${e.message}',
+        ),
+      );
     } catch (e) {
-      return Left(Errors(e.toString()));
+      return Left(UnexpectedError('Unexpected error during registration: $e'));
     }
   }
 }

@@ -11,34 +11,34 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Errors, UserEntity>> login(LoginReqParams loginReq) async {
-    Either result = await sl<AuthApiService>().login(loginReq);
+    final result = await sl<AuthApiService>().login(loginReq);
 
     return result.fold((error) => Left(error), (user) async {
       try {
         // Save token locally
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('token', user.token);
+        await prefs.setString('token', user.accessToken);
 
         return Right(user);
       } catch (e) {
-        return Left(Errors('Error saving token: $e'));
+        return Left(UnexpectedError('Error saving token: $e'));
       }
     });
   }
 
   @override
   Future<Either<Errors, UserEntity>> register(RegisterReqParams regReq) async {
-    Either result = await sl<AuthApiService>().register(regReq);
+    final result = await sl<AuthApiService>().register(regReq);
 
     return result.fold((error) => Left(error), (user) async {
       try {
         // Save token locally
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('token', user.token);
+        await prefs.setString('token', user.accessToken);
 
         return Right(user);
       } catch (e) {
-        return Left(Errors('Error saving token: $e'));
+        return Left(UnexpectedError('Error saving token: $e'));
       }
     });
   }
