@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/features/feed/presentation/pages/feed_page.dart';
+import 'package:frontend/features/auth/presentation/pages/auth_page.dart';
 //import 'package:frontend/features/auth/presentation/pages/sign_up_page.dart';
 //import 'package:frontend/features/auth/presentation/pages/sign_in_page.dart';
 //import 'package:frontend/features/happenings/presentation/pages/create_incident_page.dart';
@@ -12,9 +12,9 @@ class MyAppView extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'LiveEye',
+      title: 'Aroundly',
       theme: AppThemeDark.appDarkTheme,
-      home: FeedPage(),
+      home: const AuthPage(),
     );
   }
 }
