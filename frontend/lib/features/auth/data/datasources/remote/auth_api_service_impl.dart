@@ -18,28 +18,16 @@ class AuthApiServiceImpl implements AuthApiService {
         data: loginReq.toMap(),
       );
 
-      // Log the response for debugging
-      print('Login API Response: ${response.data}');
-
-      // Validate response.data
       if (response.data == null || response.data is! Map<String, dynamic>) {
         return Left(ServerError('Invalid response: data is null or not a map'));
       }
 
-      // Check for required fields
       final data = response.data as Map<String, dynamic>;
       if (!data.containsKey('username') ||
           !data.containsKey('email') ||
           !data.containsKey('accessToken')) {
-        print('Missing fields debug info:');
-        print('Has username: ${data.containsKey('username')}');
-        print('Has email: ${data.containsKey('email')}');
-        print('Has accessToken: ${data.containsKey('accessToken')}');
-        print('Available keys: ${data.keys.toList()}');
         return Left(ServerError('Invalid response: missing required fields'));
       }
-
-      // Ensure fields are non-null strings
       final username = data['username'] as String?;
       final email = data['email'] as String?;
       final token = data['accessToken'] as String?;
@@ -72,23 +60,16 @@ class AuthApiServiceImpl implements AuthApiService {
         data: regReq.toMap(),
       );
 
-      // Log the response for debugging
-      print('Register API Response: ${response.data}');
-
-      // Validate response.data
       if (response.data == null || response.data is! Map<String, dynamic>) {
         return Left(ServerError('Invalid response: data is null or not a map'));
       }
 
-      // Check for required fields
       final data = response.data as Map<String, dynamic>;
       if (!data.containsKey('username') ||
           !data.containsKey('email') ||
           !data.containsKey('accessToken')) {
         return Left(ServerError('Invalid response: missing required fields'));
       }
-
-      // Ensure fields are non-null strings
       final username = data['username'] as String?;
       final email = data['email'] as String?;
       final token = data['accessToken'] as String?;
