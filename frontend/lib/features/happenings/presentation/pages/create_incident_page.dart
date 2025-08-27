@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:frontend/features/happenings/presentation/widgets/create_happening_field.dart';
 import 'package:frontend/features/happenings/presentation/widgets/happening_description_field.dart';
+import 'package:frontend/features/happenings/presentation/widgets/happening_image_preview.dart';
+import 'package:frontend/features/happenings/presentation/widgets/media_button.dart';
 import 'package:frontend/shared/widgets/my_button.dart';
 
 class CreateIncidentPage extends StatefulWidget {
@@ -11,6 +15,8 @@ class CreateIncidentPage extends StatefulWidget {
 }
 
 class _CreateIncidentPageState extends State<CreateIncidentPage> {
+  File? _capturedImage;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +34,15 @@ class _CreateIncidentPageState extends State<CreateIncidentPage> {
             const SizedBox(height: 18),
             HappeningDescriptionField(),
             const SizedBox(height: 18),
-            MyButton(btnText: 'Create Incident', onPressed: () {}),
+            MediaButton(
+              onImageSelected: (file) {
+                setState(() => _capturedImage = file);
+              },
+            ),
+            const SizedBox(height: 12),
+            HappeningImagePreview(imageFile: _capturedImage),
+            const SizedBox(height: 18),
+            MyButton(btnText: 'Post', onPressed: () {}),
           ],
         ),
       ),
