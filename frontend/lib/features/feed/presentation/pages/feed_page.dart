@@ -7,13 +7,13 @@ class FeedPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Feed'),
-        centerTitle: true,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
-        ),
-      ),
+      // appBar: AppBar(
+      //   title: Text('Feed'),
+      //   centerTitle: true,
+      //   shape: RoundedRectangleBorder(
+      //     borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+      //   ),
+      // ),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.only(top: 24, left: 24, right: 24),

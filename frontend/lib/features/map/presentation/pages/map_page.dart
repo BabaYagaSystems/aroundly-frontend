@@ -5,9 +5,6 @@ class MapPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Map Page'), centerTitle: true),
-      body: Center(child: Text('Map Page')),
-    );
+    return Scaffold(body: Center(child: Text('Map Page')));
   }
 }
