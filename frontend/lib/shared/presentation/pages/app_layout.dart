@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/features/alerts/presentation/alerts_page.dart';
+import 'package:frontend/features/alerts/presentation/pages/alerts_page.dart';
 import 'package:frontend/features/feed/presentation/pages/feed_page.dart';
 import 'package:frontend/features/happenings/presentation/pages/create_incident_page.dart';
 import 'package:frontend/features/map/presentation/pages/map_page.dart';
-import 'package:frontend/features/profile/presentation/profile_page.dart';
+import 'package:frontend/features/profile/presentation/pages/profile_page.dart';
 import 'package:frontend/shared/presentation/widgets/bottom_navbar.dart';
 import 'package:frontend/shared/themes/app_colors.dart';
 
@@ -33,7 +33,13 @@ class _AppLayoutState extends State<AppLayout> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Aroundly'), centerTitle: true),
+      appBar: AppBar(
+        title: Text("A R O U N D L Y"),
+        centerTitle: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+        ),
+      ),
       body: _screens[_selectedIndex],
       bottomNavigationBar: BottomNavbar(
         selectedIndex: _selectedIndex,
