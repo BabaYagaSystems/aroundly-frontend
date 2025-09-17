@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/features/auth/presentation/pages/auth_page.dart';
 //import 'package:frontend/features/auth/presentation/pages/auth_page.dart';
-import 'package:frontend/shared/presentation/pages/app_layout.dart';
+//import 'package:frontend/shared/presentation/pages/app_layout.dart';
 //import 'package:frontend/features/auth/presentation/pages/sign_up_page.dart';
 //import 'package:frontend/features/auth/presentation/pages/sign_in_page.dart';
 //import 'package:frontend/features/happenings/presentation/pages/create_incident_page.dart';
@@ -15,7 +16,7 @@ class MyAppView extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Aroundly',
       theme: AppThemeDark.appDarkTheme,
-      home: AppLayout(),
+      home: AuthPage(),
     );
   }
 }

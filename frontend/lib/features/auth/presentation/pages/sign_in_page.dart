@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/features/auth/data/models/login_req_params.dart';
 import 'package:frontend/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:frontend/features/map/presentation/pages/map_page.dart';
+//import 'package:frontend/features/map/presentation/pages/map_page.dart';
+import 'package:frontend/shared/presentation/pages/app_layout.dart';
 import 'package:frontend/shared/widgets/my_button.dart';
 import 'package:frontend/features/auth/presentation/widgets/auth_field.dart';
 import 'package:frontend/features/auth/presentation/widgets/oauth_button.dart';
@@ -36,7 +37,7 @@ class _SignInPageState extends State<SignInPage> {
         if (state is AuthSuccess) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (_) => const MapPage()),
+            MaterialPageRoute(builder: (_) => const AppLayout()),
           );
         } else if (state is AuthError) {
           ScaffoldMessenger.of(
