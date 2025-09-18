@@ -3,8 +3,14 @@ import 'package:frontend/shared/themes/theme.dart';
 
 class MyButton extends StatelessWidget {
   final String btnText;
-  final VoidCallback onPressed;
-  const MyButton({super.key, required this.btnText, required this.onPressed});
+  final VoidCallback? onPressed;
+  final bool loading;
+  const MyButton({
+    super.key,
+    required this.btnText,
+    this.onPressed,
+    this.loading = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,10 +23,16 @@ class MyButton extends StatelessWidget {
         fixedSize: const Size(365, 60),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       ),
-      child: Text(
-        btnText,
-        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-      ),
+      child: loading
+          ? const SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            )
+          : Text(
+              btnText,
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            ),
     );
   }
 }

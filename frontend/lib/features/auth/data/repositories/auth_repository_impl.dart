@@ -1,45 +1,46 @@
-import 'package:dartz/dartz.dart';
-import 'package:frontend/core/errors/errors.dart';
-import 'package:frontend/features/auth/data/datasources/remote/auth_api_service.dart';
-import 'package:frontend/features/auth/data/models/login_req_params.dart';
-import 'package:frontend/features/auth/data/models/register_req_params.dart';
-import 'package:frontend/features/auth/domain/entities/user_entity.dart';
-import 'package:frontend/features/auth/domain/repositories/auth_repository.dart';
-import 'package:frontend/service_locator.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../../domain/entities/user.dart';
+import '../../domain/repositories/auth_repository.dart';
+import '../datasources/auth_remote_data_source.dart';
+import '../datasources/token_storage.dart';
+import '../models/login_request_model.dart';
+import '../models/register_request_model.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
+  final IAuthRemoteDataSource _remote;
+  final TokenStorage _storage;
+
+  AuthRepositoryImpl(this._remote, this._storage);
+
   @override
-  Future<Either<Errors, UserEntity>> login(LoginReqParams loginReq) async {
-    final result = await sl<AuthApiService>().login(loginReq);
-
-    return result.fold((error) => Left(error), (user) async {
-      try {
-        // Save token locally
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('token', user.accessToken);
-
-        return Right(user);
-      } catch (e) {
-        return Left(UnexpectedError('Error saving token: $e'));
-      }
-    });
+  Future<(User?, String)> login({
+    required String usernameOrEmail,
+    required String password,
+  }) async {
+    final res = await _remote.login(
+      LoginRequest(usernameOrEmail: usernameOrEmail, password: password),
+    );
+    await _storage.saveTokens(
+      access: res.accessToken,
+      refresh: res.refreshToken ?? '',
+    );
+    return (res.user, res.accessToken);
   }
 
   @override
-  Future<Either<Errors, UserEntity>> register(RegisterReqParams regReq) async {
-    final result = await sl<AuthApiService>().register(regReq);
-
-    return result.fold((error) => Left(error), (user) async {
-      try {
-        // Save token locally
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('token', user.accessToken);
-
-        return Right(user);
-      } catch (e) {
-        return Left(UnexpectedError('Error saving token: $e'));
-      }
-    });
+  Future<String> register({
+    required String username,
+    required String email,
+    required String password,
+  }) {
+    return _remote.register(
+      RegisterRequest(username: username, email: email, password: password),
+    );
   }
+
+  @override
+  Future<void> logout() => _storage.clear();
+
+  @override
+  Future<bool> hasSession() async =>
+      (await _storage.readAccessToken())?.isNotEmpty == true;
 }
