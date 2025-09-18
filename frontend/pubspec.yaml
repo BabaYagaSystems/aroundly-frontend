@@ -38,6 +38,7 @@ dependencies:
   flutter_dotenv: ^6.0.0
   flutter_map: ^8.2.1
   flutter_map_location_marker: ^10.1.0
+  flutter_secure_storage: ^9.2.4
   font_awesome_flutter: ^10.8.0
   geolocator: ^14.0.2
   get_it: ^8.2.0

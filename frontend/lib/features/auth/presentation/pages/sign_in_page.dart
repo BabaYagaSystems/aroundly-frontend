@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/features/auth/data/models/login_req_params.dart';
 import 'package:frontend/features/auth/presentation/bloc/auth_bloc.dart';
 //import 'package:frontend/features/map/presentation/pages/map_page.dart';
 import 'package:frontend/shared/presentation/pages/app_layout.dart';
@@ -30,22 +29,27 @@ class _SignInPageState extends State<SignInPage> {
     super.dispose();
   }
 
+  void _showError(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state is AuthSuccess) {
+        if (state.authenticated) {
+          // login success → go to app
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (_) => const AppLayout()),
           );
-        } else if (state is AuthError) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.message)));
+        } else if (state.error != null) {
+          _showError(state.error!);
         }
       },
       builder: (context, state) {
+        final isLoading = state.loading;
+
         return Scaffold(
           body: SingleChildScrollView(
             child: Padding(
@@ -110,28 +114,41 @@ class _SignInPageState extends State<SignInPage> {
                       ],
                     ),
                     const SizedBox(height: 16),
-                    AuthField(controller: emailController, hintText: 'Email'),
+                    AuthField(
+                      controller: emailController,
+                      hintText: 'Email or Username',
+                      enabled: !isLoading,
+                      keyboardType: TextInputType.emailAddress,
+                      autofillHints: const [
+                        AutofillHints.username,
+                        AutofillHints.email,
+                      ],
+                    ),
                     const SizedBox(height: 16),
                     AuthField(
                       controller: passwordController,
                       hintText: 'Password',
                       isObscureText: true,
+                      enabled: !isLoading,
+                      textInputAction: TextInputAction.done,
+                      autofillHints: const [AutofillHints.password],
                     ),
                     const SizedBox(height: 20),
                     MyButton(
-                      btnText: state is AuthLoading ? "Loading..." : "Log In",
-                      onPressed: () {
-                        if (formKey.currentState!.validate()) {
-                          context.read<AuthBloc>().add(
-                            LoginRequested(
-                              LoginReqParams(
-                                usernameOrEmail: emailController.text,
-                                password: passwordController.text,
-                              ),
-                            ),
-                          );
-                        }
-                      },
+                      btnText: 'Log In',
+                      loading: isLoading,
+                      onPressed: isLoading
+                          ? null
+                          : () {
+                              if (formKey.currentState?.validate() ?? false) {
+                                context.read<AuthBloc>().add(
+                                  AuthLoginSubmitted(
+                                    emailController.text.trim(),
+                                    passwordController.text,
+                                  ),
+                                );
+                              }
+                            },
                     ),
                     const SizedBox(height: 16),
                     const SizedBox(height: 20),

@@ -1,9 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
 
-// Interceptor used for showing requests and responses log
 class LoggerInterceptor extends Interceptor {
-  Logger logger = Logger(
+  final Logger logger = Logger(
     printer: PrettyPrinter(methodCount: 0, colors: true, printEmojis: true),
   );
 
@@ -11,19 +10,17 @@ class LoggerInterceptor extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) {
     final options = err.requestOptions;
     final requestPath = '${options.baseUrl}${options.path}';
-    logger.e('${options.method} request ==> $requestPath'); // Error log
-    logger.d(
-      'Error type: ${err.error} \n '
-      'Error message: ${err.message}',
-    ); // Debug log
-    handler.next(err); // Continue with the Error
+    logger.e('${options.method} request ==> $requestPath');
+    logger.d('Error type: ${err.error} \n Error message: ${err.message}');
+    handler.next(err);
   }
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     final requestPath = '${options.baseUrl}${options.path}';
-    logger.i('${options.method} request ==> $requestPath'); // Info log
-    handler.next(options); // Continue with the Request
+    logger.i('${options.method} request ==> $requestPath');
+    logger.d('HEADERS: ${options.headers}\nDATA: ${options.data}');
+    handler.next(options);
   }
 
   @override
@@ -31,9 +28,9 @@ class LoggerInterceptor extends Interceptor {
     logger.d(
       'STATUSCODE: ${response.statusCode} \n'
       'STATUSMESSAGE: ${response.statusMessage} \n'
-      'HEADERS: ${response.headers} \n'
+      'HEADERS: ${response.headers}\n'
       'DATA: ${response.data}',
-    ); // Debug log
-    handler.next(response); // Continue with the Response
+    );
+    handler.next(response);
   }
 }

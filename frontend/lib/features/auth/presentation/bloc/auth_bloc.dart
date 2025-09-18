@@ -1,57 +1,63 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:frontend/features/auth/data/models/login_req_params.dart';
-import 'package:frontend/features/auth/data/models/register_req_params.dart';
-import 'package:frontend/features/auth/domain/entities/user_entity.dart';
-import 'package:frontend/features/auth/domain/usecases/login_usecase.dart';
-import 'package:frontend/features/auth/domain/usecases/register_usecase.dart';
-import 'package:frontend/service_locator.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../domain/entities/user.dart';
+import '../../domain/usecases/login_usecase.dart';
+import '../../domain/usecases/register_usecase.dart';
+import '../../domain/repositories/auth_repository.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final LoginUsecase _loginUsecase = sl<LoginUsecase>();
-  final RegisterUsecase _registerUsecase = sl<RegisterUsecase>();
+  final LoginUseCase _login;
+  final RegisterUseCase _register;
+  final AuthRepository _repo;
 
-  AuthBloc() : super(AuthInitial()) {
-    on<LoginRequested>(_onLoginRequested);
-    on<RegisterRequested>(_onRegisterRequested);
+  AuthBloc(this._login, this._register, this._repo)
+    : super(const AuthState.unknown()) {
+    on<AuthAppStarted>(_onAppStarted);
+    on<AuthLoginSubmitted>(_onLogin);
+    on<AuthRegisterSubmitted>(_onRegister);
+    on<AuthLogoutRequested>(_onLogout);
   }
 
-  Future<void> _onLoginRequested(
-    LoginRequested event,
-    Emitter<AuthState> emit,
-  ) async {
-    emit(AuthLoading());
-
-    final result = await _loginUsecase.call(param: event.params);
-
-    result.fold(
-      (error) {
-        return emit(AuthError(error.message));
-      },
-      (user) {
-        return emit(AuthSuccess(user));
-      },
+  Future<void> _onAppStarted(AuthAppStarted e, Emitter<AuthState> emit) async {
+    final has = await _repo.hasSession();
+    emit(
+      has ? const AuthState.authenticated() : const AuthState.unauthenticated(),
     );
   }
 
-  Future<void> _onRegisterRequested(
-    RegisterRequested event,
+  Future<void> _onLogin(AuthLoginSubmitted e, Emitter<AuthState> emit) async {
+    emit(const AuthState.loading());
+    try {
+      final (user, _) = await _login(e.usernameOrEmail, e.password);
+      if (user != null) {
+        emit(AuthState.authSuccess(user));
+      } else {
+        // we only have token; mark authenticated without user details
+        emit(const AuthState.authenticated());
+      }
+    } catch (err) {
+      emit(AuthState.failure(err.toString()));
+    }
+  }
+
+  Future<void> _onRegister(
+    AuthRegisterSubmitted e,
     Emitter<AuthState> emit,
   ) async {
-    emit(AuthLoading());
+    emit(const AuthState.loading());
+    try {
+      await _register(e.username, e.email, e.password);
+      emit(const AuthState.registered());
+    } catch (err) {
+      emit(AuthState.failure(err.toString()));
+    }
+  }
 
-    final result = await _registerUsecase.call(param: event.params);
-
-    result.fold(
-      (error) {
-        return emit(AuthError(error.message));
-      },
-      (user) {
-        return emit(AuthSuccess(user));
-      },
-    );
+  Future<void> _onLogout(AuthLogoutRequested e, Emitter<AuthState> emit) async {
+    await _repo.logout();
+    emit(const AuthState.unauthenticated());
   }
 }

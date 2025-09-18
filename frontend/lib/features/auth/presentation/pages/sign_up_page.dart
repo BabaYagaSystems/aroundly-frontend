@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/features/auth/data/models/register_req_params.dart';
 import 'package:frontend/features/auth/presentation/bloc/auth_bloc.dart';
-//import 'package:frontend/features/map/presentation/pages/map_page.dart';
-import 'package:frontend/shared/presentation/pages/app_layout.dart';
+// import 'package:frontend/shared/presentation/pages/app_layout.dart';
 import 'package:frontend/shared/widgets/my_button.dart';
 import 'package:frontend/features/auth/presentation/widgets/auth_field.dart';
 import 'package:frontend/features/auth/presentation/widgets/oauth_button.dart';
@@ -39,22 +37,25 @@ class _SignUpPageState extends State<SignUpPage> {
     super.dispose();
   }
 
+  void _showSnack(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state is AuthSuccess) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (_) => const AppLayout()),
-          );
-        } else if (state is AuthError) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.message)));
+        if (state.justRegistered) {
+          _showSnack('Account created! Please log in.');
+          // Go back to Sign In (since register doesn’t return tokens)
+          widget.togglePages?.call();
+        } else if (state.error != null) {
+          _showSnack(state.error!);
         }
       },
       builder: (context, state) {
+        final isLoading = state.loading;
+
         return Scaffold(
           body: SingleChildScrollView(
             child: Padding(
@@ -124,14 +125,27 @@ class _SignUpPageState extends State<SignUpPage> {
                     AuthField(
                       controller: usernameController,
                       hintText: 'Username',
+                      enabled: !isLoading,
+                      textInputAction: TextInputAction.next,
+                      autofillHints: const [AutofillHints.username],
                     ),
                     const SizedBox(height: 16),
-                    AuthField(controller: emailController, hintText: 'Email'),
+                    AuthField(
+                      controller: emailController,
+                      hintText: 'Email',
+                      enabled: !isLoading,
+                      keyboardType: TextInputType.emailAddress,
+                      autofillHints: const [AutofillHints.email],
+                      textInputAction: TextInputAction.next,
+                    ),
                     const SizedBox(height: 16),
                     AuthField(
                       controller: passwordController,
                       hintText: 'Password',
                       isObscureText: true,
+                      enabled: !isLoading,
+                      textInputAction: TextInputAction.done,
+                      autofillHints: const [AutofillHints.newPassword],
                     ),
                     // const SizedBox(height: 16),
                     // AuthField(
@@ -141,20 +155,21 @@ class _SignUpPageState extends State<SignUpPage> {
                     // ),
                     const SizedBox(height: 20),
                     MyButton(
-                      btnText: state is AuthLoading ? "Loading..." : "Sign Up",
-                      onPressed: () {
-                        if (formKey.currentState!.validate()) {
-                          context.read<AuthBloc>().add(
-                            RegisterRequested(
-                              RegisterReqParams(
-                                username: usernameController.text,
-                                email: emailController.text,
-                                password: passwordController.text,
-                              ),
-                            ),
-                          );
-                        }
-                      },
+                      btnText: isLoading ? 'Loading...' : 'Sign Up',
+                      loading: isLoading,
+                      onPressed: isLoading
+                          ? null
+                          : () {
+                              if (formKey.currentState?.validate() ?? false) {
+                                context.read<AuthBloc>().add(
+                                  AuthRegisterSubmitted(
+                                    usernameController.text.trim(),
+                                    emailController.text.trim(),
+                                    passwordController.text,
+                                  ),
+                                );
+                              }
+                            },
                     ),
                     const SizedBox(height: 20),
                     Row(
