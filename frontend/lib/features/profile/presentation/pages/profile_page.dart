@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/features/profile/presentation/widgets/link_cards.dart';
-import 'package:frontend/shared/themes/app_colors.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/features/auth/presentation/pages/auth_page.dart';
 import 'package:frontend/shared/widgets/my_button.dart';
+import '../../../auth/presentation/bloc/auth_bloc.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -11,32 +12,82 @@ class ProfilePage extends StatelessWidget {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.only(top: 24, left: 24, right: 24),
-        child: Column(
-          children: [
-            Container(
-              width: 124,
-              height: 124,
-              decoration: BoxDecoration(
-                color: AppColors.surfaceDark50,
-                borderRadius: BorderRadius.all(Radius.circular(80)),
-              ),
-            ),
-            SizedBox(height: 12.0),
-            Text(
-              "Name Surname",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-            ),
-            SizedBox(height: 30.0),
-            LinkCards(linkLabel: "First"),
-            SizedBox(height: 20.0),
-            LinkCards(linkLabel: "Second"),
-            SizedBox(height: 20.0),
-            LinkCards(linkLabel: "Third"),
-            SizedBox(height: 70.0),
-            MyButton(btnText: "Log Out", onPressed: () {}),
-            SizedBox(height: 15),
-            MyButton(btnText: "Deactivate", onPressed: () {}),
-          ],
+        child: BlocConsumer<AuthBloc, AuthState>(
+          listenWhen: (prev, curr) => prev.authenticated && !curr.authenticated,
+          listener: (context, state) {
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (_) => const AuthPage()),
+              (route) => false,
+            );
+          },
+          builder: (context, state) {
+            if (state.loading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (state.authenticated) {
+              final username = state.user?.username ?? '—';
+              //final email = state.user?.email ?? '—';
+
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // const Text(
+                  //   'Profile',
+                  //   style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900),
+                  // ),
+                  // const SizedBox(height: 16),
+
+                  // Username
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.person, size: 20),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Username: $username',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  // const SizedBox(height: 10),
+
+                  // // Email
+                  // Row(
+                  //   children: [
+                  //     const Icon(Icons.email, size: 20),
+                  //     const SizedBox(width: 8),
+                  //     Expanded(
+                  //       child: Text(
+                  //         'Email: $email',
+                  //         style: const TextStyle(
+                  //           fontSize: 16,
+                  //           fontWeight: FontWeight.w600,
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                  const SizedBox(height: 30),
+
+                  MyButton(
+                    btnText: "Log Out",
+                    bgColor: Colors.red,
+                    onPressed: () {
+                      context.read<AuthBloc>().add(AuthLogoutRequested());
+                    },
+                  ),
+                ],
+              );
+            } else {
+              return const Center(child: Text('Redirecting...'));
+            }
+          },
         ),
       ),
     );

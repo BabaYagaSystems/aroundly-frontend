@@ -9,6 +9,11 @@ import '../../features/auth/domain/repositories/auth_repository.dart';
 import '../../features/auth/domain/usecases/login_usecase.dart';
 import '../../features/auth/domain/usecases/register_usecase.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
+import '../../features/happenings/data/datasources/incident_remote_data_source.dart';
+import '../../features/happenings/data/repositories/incident_repository_impl.dart';
+import '../../features/happenings/domain/repositories/incident_repository.dart';
+import '../../features/happenings/domain/usecases/create_incident_usecase.dart';
+import '../../features/happenings/presentation/bloc/create_incident_bloc.dart';
 import '../network/dio_client.dart';
 import '../network/interceptors.dart';
 import '../constants/api_constants.dart';
@@ -62,4 +67,14 @@ Future<void> initDI() async {
 
   // BLoC
   sl.registerFactory(() => AuthBloc(sl(), sl(), sl()));
+
+  sl.registerLazySingleton<IIncidentRemoteDataSource>(
+    () => IncidentRemoteDataSource(sl()),
+  );
+
+  sl.registerLazySingleton<IncidentRepository>(
+    () => IncidentRepositoryImpl(sl()),
+  );
+  sl.registerLazySingleton(() => CreateIncidentUseCase(sl()));
+  sl.registerFactory(() => CreateIncidentBloc(sl()));
 }

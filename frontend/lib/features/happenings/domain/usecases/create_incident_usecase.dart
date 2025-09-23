@@ -1,16 +1,12 @@
-import 'package:dartz/dartz.dart';
-import 'package:frontend/core/errors/errors.dart';
-import 'package:frontend/core/usecase/usecase.dart';
-import 'package:frontend/features/happenings/data/models/incident_req_params.dart';
-import 'package:frontend/features/happenings/domain/entities/incident_entity.dart';
-import 'package:frontend/features/happenings/domain/repositories/incident_repository.dart';
+import '../entities/incident.dart';
+import '../entities/incident_created_response.dart';
+import '../repositories/incident_repository.dart';
 
-class CreateIncidentUsecase
-    implements Usecase<IncidentEntity, IncidentReqParams> {
-  @override
-  Future<Either<Errors, IncidentEntity>> call({
-    IncidentReqParams? param,
-  }) async {
-    return sl<IncidentRepository>().createIncident(param!);
+class CreateIncidentUseCase {
+  final IncidentRepository repository;
+  CreateIncidentUseCase(this.repository);
+
+  Future<IncidentCreatedResponse> call(Incident incident) {
+    return repository.createIncident(incident);
   }
 }

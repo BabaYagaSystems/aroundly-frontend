@@ -4,6 +4,7 @@ import 'package:frontend/app_view.dart';
 import 'package:frontend/features/auth/presentation/bloc/auth_bloc.dart';
 
 import 'core/di/injection.dart';
+import 'features/happenings/presentation/bloc/create_incident_bloc.dart';
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
@@ -15,6 +16,9 @@ class MainApp extends StatelessWidget {
         BlocProvider<AuthBloc>(
           create: (_) =>
               sl<AuthBloc>()..add(AuthAppStarted()), // fire initial check
+        ),
+        BlocProvider<CreateIncidentBloc>(
+          create: (_) => sl<CreateIncidentBloc>(),
         ),
       ],
       child: const MyAppView(),
