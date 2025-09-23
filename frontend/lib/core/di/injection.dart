@@ -14,6 +14,12 @@ import '../../features/happenings/data/repositories/incident_repository_impl.dar
 import '../../features/happenings/domain/repositories/incident_repository.dart';
 import '../../features/happenings/domain/usecases/create_incident_usecase.dart';
 import '../../features/happenings/presentation/bloc/create_incident_bloc.dart';
+import '../../features/map/data/datasources/map_remote_data_source.dart';
+import '../../features/map/data/repositories/map_repository_impl.dart';
+import '../../features/map/domain/repositories/map_repository.dart';
+import '../../features/map/domain/usecases/get_incident_preview_usecase.dart';
+import '../../features/map/domain/usecases/get_nearby_incidents_usecase.dart';
+import '../../features/map/presentation/bloc/map_bloc.dart';
 import '../network/dio_client.dart';
 import '../network/interceptors.dart';
 import '../constants/api_constants.dart';
@@ -77,4 +83,18 @@ Future<void> initDI() async {
   );
   sl.registerLazySingleton(() => CreateIncidentUseCase(sl()));
   sl.registerFactory(() => CreateIncidentBloc(sl()));
+
+  sl.registerLazySingleton<IMapRemoteDataSource>(
+    () => MapRemoteDataSource(sl<DioClient>()),
+  );
+
+  // repo
+  sl.registerLazySingleton<MapRepository>(() => MapRepositoryImpl(sl()));
+
+  // use cases
+  sl.registerLazySingleton(() => GetNearbyIncidentsUseCase(sl()));
+  sl.registerLazySingleton(() => GetIncidentPreviewUseCase(sl()));
+
+  // bloc
+  sl.registerFactory(() => MapBloc(getNearby: sl(), getPreview: sl()));
 }
