@@ -4,11 +4,13 @@ import 'package:frontend/shared/themes/theme.dart';
 class MyButton extends StatelessWidget {
   final String btnText;
   final VoidCallback? onPressed;
+  final Color? bgColor;
   final bool loading;
   const MyButton({
     super.key,
     required this.btnText,
     this.onPressed,
+    this.bgColor,
     this.loading = false,
   });
 
@@ -18,7 +20,7 @@ class MyButton extends StatelessWidget {
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         padding: EdgeInsets.symmetric(vertical: 18, horizontal: 24),
-        backgroundColor: AppColors.primary,
+        backgroundColor: bgColor ?? AppColors.primary,
         foregroundColor: Colors.black,
         fixedSize: const Size(365, 60),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/features/alerts/presentation/pages/alerts_page.dart';
 import 'package:frontend/features/feed/presentation/pages/feed_page.dart';
 import 'package:frontend/features/happenings/presentation/pages/create_incident_page.dart';
@@ -6,6 +7,9 @@ import 'package:frontend/features/map/presentation/pages/map_page.dart';
 import 'package:frontend/features/profile/presentation/pages/profile_page.dart';
 import 'package:frontend/shared/presentation/widgets/bottom_navbar.dart';
 import 'package:frontend/shared/themes/app_colors.dart';
+
+import '../../../core/di/injection.dart';
+import '../../../features/happenings/presentation/bloc/create_incident_bloc.dart';
 
 class AppLayout extends StatefulWidget {
   const AppLayout({super.key});
@@ -51,7 +55,12 @@ class _AppLayoutState extends State<AppLayout> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => const CreateIncidentPage()),
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => sl<CreateIncidentBloc>(),
+                child: const CreateIncidentPage(),
+              ),
+            ),
           );
         },
         child: const Icon(Icons.add, size: 32, color: Colors.white),

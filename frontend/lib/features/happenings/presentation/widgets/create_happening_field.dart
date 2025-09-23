@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 
 class CreateHappeningField extends StatelessWidget {
-  const CreateHappeningField({super.key});
+  final String? initialValue;
+  final ValueChanged<String>? onChanged;
+
+  const CreateHappeningField({super.key, this.initialValue, this.onChanged});
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      decoration: InputDecoration(
+      initialValue: initialValue,
+      onChanged: onChanged,
+      decoration: const InputDecoration(
         labelText: 'Title',
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
+      textInputAction: TextInputAction.next,
     );
   }
 }
