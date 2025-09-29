@@ -32,10 +32,10 @@ class AuthState extends Equatable {
   const AuthState.authenticated()
     : this(loading: false, authenticated: true, justRegistered: false);
 
-  AuthState.authSuccess(User u)
+  const AuthState.authSuccess(User u)
     : this(loading: false, authenticated: true, justRegistered: false, user: u);
 
-  AuthState.failure(String msg)
+  const AuthState.failure(String msg)
     : this(
         loading: false,
         authenticated: false,

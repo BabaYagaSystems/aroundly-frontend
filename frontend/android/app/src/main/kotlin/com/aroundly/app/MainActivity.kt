@@ -1,4 +1,4 @@
-package com.example.frontend
+package com.aroundly.app
 
 import io.flutter.embedding.android.FlutterActivity
 
