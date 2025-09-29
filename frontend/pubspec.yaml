@@ -47,6 +47,7 @@ dependencies:
   logger: ^2.6.1
   mapbox_maps_flutter: ^2.10.0
   shared_preferences: ^2.5.3
+  auth0_flutter: ^1.5.1  
 
 dev_dependencies:
   flutter_lints: ^5.0.0

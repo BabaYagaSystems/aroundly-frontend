@@ -1,3 +1,4 @@
+import 'package:auth0_flutter/auth0_flutter.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_remote_data_source.dart';
@@ -11,6 +12,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
   AuthRepositoryImpl(this._remote, this._storage);
 
+  // PĂSTRAT: Implementarea pentru login cu email/parolă
   @override
   Future<(User?, String)> login({
     required String usernameOrEmail,
@@ -26,6 +28,7 @@ class AuthRepositoryImpl implements AuthRepository {
     return (res.user, res.accessToken);
   }
 
+  // PĂSTRAT: Implementarea pentru register
   @override
   Future<String> register({
     required String username,
@@ -34,6 +37,15 @@ class AuthRepositoryImpl implements AuthRepository {
   }) {
     return _remote.register(
       RegisterRequest(username: username, email: email, password: password),
+    );
+  }
+
+  // NOU: Implementarea pentru salvarea credentialelor Auth0
+  @override
+  Future<void> loginWithCredentials(Credentials credentials) async {
+    await _storage.saveTokens(
+      access: credentials.accessToken,
+      refresh: credentials.refreshToken ?? '',
     );
   }
 
